@@ -1,0 +1,217 @@
+Why use ES2015 or ES6 ?
+	- Cleaner more readable code
+	- Removing some of the confusing areas and help to reduce boilerplate code cutting down on the size of your applications
+	- New useful features which are actually not able to be created in ES5
+
+1. Block scoping (let and const)
+	- Create variable in the scope where it's actually needed and meaningful.
+	- Remove problems due to variable hoisting with var.
+	- Use of const to declare helper/constant values and avoid accidental changes of a variable value.
+	- Even solve some closure problems like the classic for loop scope confusion problem.
+	
+	  - ES 5 Confusing code:
+		var links = [];
+		for(var i=0; i<5; i++) {
+			links[i].onclick = function() { 
+				console.log('link: ', i); 
+			}
+		}
+		 
+		links[0].onclick(); // link: 5
+		links[1].onclick(); // link: 5
+	  
+	  - ES6 code:
+		var links = [];
+		for(let i=0;i<5;i++) {
+			links[i].onclick = function() {                     links[i].onclick = i => console.log('link: ', i);
+				console.log('link: ', i); 
+			}
+		}
+		 
+		links[0].onclick(); // link: 0
+		links[1].onclick(); // link: 1
+		
+		
+2. Arrow Functions
+	- A new shorthand way of declaring functions. 
+		var addOne = a => a + 1;
+		addOne(1); // 2
+		 
+		var add = (a, b) => a + b;
+		add(1,2); // 3
+		 
+		var addLogged = (a, b) => { 
+			let c = a + b; 
+			console.log(a, '+', b, '=', c); 
+			return c; 
+		};
+		addLogged(1, 2); // 1 + 2 = 3 (returns 3)
+		
+	- Also share scope with their parent (This means that the keyword this refers to the parent this. Now inside callbacks we can access this without having to wrap the handler inside a closure or use function binding).
+	  - ES5 code:
+		var self = this;
+		el.onclick = function() {
+		  self.doSomething();
+		};
+		
+	  - ES6 code:
+		el.onclick = () => this.doSomething()
+		
+		
+3. Default Parameters
+	- ES5 code:
+		var add = function(a, b) {
+			b = (!b && b !== 0) ? 1 : b;
+			return a + b;
+		}
+	- ES6 code:
+		var add = function(a, b=1) {                              let add = (a,b=1) => (a+b);
+			return a + b;
+		}
+		
+	- Using expressions
+		function add(a = 3, b = (x => Math.floor(Math.random() * x + x))(a), c = a) {
+			return a + b + c;
+		}
+		
+		
+4. Rest Parameters
+	ES5 code:
+		function add(a, b) {
+			var more = Array.prototype.slice.call(arguments, 2);
+			return a + b + more.reduce(function(i, j) { return i + j; }, 0);
+		}
+	
+	ES6 code:
+		function add(a, b, ...more) {
+			return a + b + more.reduce((i, j) => i + j, 0);
+		} 
+		console.log(add(1, 2)); // 3
+		console.log(add(1, 2, 3, 4)); // 10
+
+		
+5. Spread operator
+
+	Example 1: 
+		var vals = [1, 2];
+		function add(a, b) {
+			return a + b;
+		}
+		console.log(add(...vals)); // 3
+		
+	Example 2:
+		var vals = [1, 2];
+		var others = [3, ...vals, 4]; // [3, 1, 2, 4]
+		
+		
+5. Object Destructuring
+
+6. Classes
+
+Classes creation and usage in ES5 was a pain in the rear, because there wasn’t a keyword class (it was reserved but did nothing)
+class Animal {
+    constructor(name, voice) {
+        this.name = name;
+        this.voice = voice;
+        this._eyes = 2;
+    }
+ 
+    get eyes() {
+        return this._eyes;
+    }
+	
+    speak() {
+        console.log(`The ${this.name} says ${this.voice}.`);
+    }
+}
+
+var foo = new Animal('dog', 'woof');
+foo.speak(); // The dog says woof.
+console.log(`${foo.name} has ${foo.eyes} eyes.`); // dog has 2 eyes
+
+
+7. Maps and Sets
+
+8. Template String Literals
+console.log(`${foo.name} has ${foo.eyes} eyes.`); // dog has 2 eyes
+
+9. Tag functions
+	currency `${employee.salary} out of total amount ${amount} is allotted for education.`
+	localize `${employee.salary} out of total amount ${amount} is allotted for education.`
+	jsx `<div> 
+			<p> Student Categorization </p>
+		</div>`
+
+		
+10. In-built promises
+11. Symbol
+12. Iterators and Generators
+
+
+ 
+Design patterns in Javascript
+1) Observer Pattern:
+		'use strict';
+		class Subjectt {
+			constructor() {
+			}
+			Attach (Observer){
+				this.observers.push(Observer);
+				facade.log('Observer attached')
+			}
+			Dettach (Observer){
+				for(var i in this.observers)
+					if(this.observers[i] === Observer)
+						this.observers.splice(i, 1)
+			}
+			Notify (){
+				facade.log('Subject Notify')
+				for(var i in this.observers){
+					this.observers[i].Update(this);
+				}
+			}
+		}
+
+		class ConcreteSubject extends Subjectt {
+			constructor() {
+				super()
+				this.subjectState = null
+				this.observers = []
+				facade.log('ConcreteSubject created')
+			}
+			GetState() {
+				return this.subjectState;
+			}
+			SetState(state) {
+				this.subjectState = state;
+				this.Notify()
+			}
+		}
+
+		class Observer {
+			constructor() {
+			}
+			Update (){
+			}
+		}
+
+		class ConcreteObserver extends Observer {
+			constructor() {
+				super()
+				this.observerState = '';
+				facade.log('ConcreteObserver created')
+			}
+			Update (Subject){
+				this.observerState = Subject.GetState();
+				facade.log('Observer new state: ' + this.observerState)
+			}
+		}
+
+		function init_Observer() {
+			var observer1 = new ConcreteObserver()
+			var observer2 = new ConcreteObserver()
+			var subject = new ConcreteSubject()
+			subject.Attach(observer1)
+			subject.Attach(observer2)
+			subject.SetState('state 1')
+		}
